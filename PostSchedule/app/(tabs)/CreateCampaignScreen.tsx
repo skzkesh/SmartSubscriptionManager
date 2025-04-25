@@ -1,7 +1,8 @@
 import React from 'react';
 import { StyleSheet, Text, View, Pressable, FlatList } from 'react-native';
 import { SelectList } from 'react-native-dropdown-select-list';
-import { TextInput } from 'react-native-gesture-handler';
+//import ReactDOM from 'react-native-dom';
+//import { TextInput } from 'react-native-gesture-handler';
 
 export type Props = {
   name: string;
@@ -11,51 +12,33 @@ export type Props = {
 const CreateCampaignScreen = () => 
 {
     const [selected, setSelected] = React.useState("");
-    const data = [
-        {key: '1', value: 'Email'},
-        {key: '1', value: 'SMS'},
-    ]
+    const [name, setName] = React.useState("");
+    
 
-  return (
-    <View style={styles.container}>
+     return (
+     <View style={styles.container}>
       <Text style={styles.title}>
-        Create Campaign
-      </Text>
+       Create Campaign
+       </Text>
       <View style={styles.formContainer}>
         <Text style={styles.formTitle}>
-            Campaign Title
+          Campaign Title
         </Text>
-        <TextInput>
-            placeholder='Title'
-        </TextInput>
-        <Text style={styles.formTitle}>
-            Campaign Type
-        </Text>
-        {/* <SelectList
-            data = {data}
-            setSelected = {selected}
-            placeholder = 'Select Type'
-        /> */}
-        <Text style={styles.formTitle}>
-            Message Content
-        </Text>
+        {/* <TextInput>
+          placeholder='Title'
+        </TextInput> */}
       </View>
-      <View style={styles.buttonContainer}>
-        <Pressable
-          //onPress={onIncrement}
-          style={({ pressed }) => [
-            styles.createPostButton,
-            {
-              backgroundColor: pressed
-                ? '#505050'
-                : 'rgba(39, 39, 39, 1)',
-            },
-          ]}>
-          <Text style={styles.buttonText}>Preview Campaign</Text>
-        </Pressable>
-      </View>
+      <form>
+        <label>Name
+        <input
+          type="text" 
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+        </label>
+      </form>
     </View>
-  );
+     );
 };
 
 const styles = StyleSheet.create({
