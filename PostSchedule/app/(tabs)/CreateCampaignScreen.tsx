@@ -23,6 +23,9 @@ const CreateCampaignScreen = () =>
       }
       else {
         Alert.alert('Success', `Your form is submitted.`);
+        setTitle('');
+        setSubject('');
+        setMessage('');
         router.replace('/(tabs)/EmailPreviewScreen');
       }
     };
