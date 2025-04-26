@@ -1,26 +1,24 @@
 import React from 'react';
 import { StyleSheet, Text, View, Pressable, TextInput, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
-import validateEmail from '../../util/validation';
+import validateEmail from '../util/validation';
 import { SafeAreaView } from 'react-native';
 
 
 
-const StartScreen = () =>  {
+const LoginScreen = () =>  {
     const router = useRouter();
-    const [username, setUsername] = React.useState("");
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
 
-    const handleSignUpButon = () => {
-        if (!username || !email || !password){
+    const handleLoginButon = () => {
+        if (!email || !password){
           Alert.alert('Empty Field', 'All field must be filled');
         }
         else if (!validateEmail(email)){
           Alert.alert('Invalid Email', 'Email format is invalid');
         }
         else {
-          setUsername("")
           setEmail("");
           setPassword("");
           router.replace('/(tabs)/DashboardScreen');
@@ -29,13 +27,7 @@ const StartScreen = () =>  {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.greeting}>Sign Up</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Name"
-        value={username}
-        onChangeText={setUsername}
-      />
+      <Text style={styles.greeting}>Log In</Text>
       <TextInput
         style={styles.input}
         placeholder="Email Address"
@@ -51,23 +43,23 @@ const StartScreen = () =>  {
       />
       <View>
         <Pressable
-          onPress={handleSignUpButon}
+          onPress={handleLoginButon}
           style={({ pressed }) => [
             styles.button,
             {
               backgroundColor: pressed ? '#505050' : 'rgba(39, 39, 39, 1)',
             },
           ]}>
-          <Text style={styles.buttonText}>Sign Up</Text>
+          <Text style={styles.buttonText}>Log In</Text>
         </Pressable>
       </View>
       <Text style={{marginTop: 10}}>
-        Already have account? {' '}
+        Do not have an account? {' '}
         <Text
-          onPress={() => router.replace('../LoginScreen')}
+          onPress={() => router.replace('/')}
           style={{ color: 'blue', textDecorationLine: 'underline' }}
         >
-          Log In
+          Sign Up
         </Text>
       </Text>
     </SafeAreaView>
@@ -111,4 +103,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default StartScreen;
+export default LoginScreen;
