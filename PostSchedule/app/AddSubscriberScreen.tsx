@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, Pressable, FlatList, TextInput, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
+import axios from 'axios';
 
 const AddSubscriberScreen = () => 
 {
@@ -8,14 +9,17 @@ const AddSubscriberScreen = () =>
     const [name, setName] = React.useState("");
     const [email, setEmail] = React.useState("");
 
-    const handleAdd = () => {
-      if (!name || !email) {
-        Alert.alert('Error', 'All fields are required!');
-      }
-      else {
-        Alert.alert('Success', `Your form is submitted.`);
-        setName('');
+    const handleAdd = async () => {
+      try {
+        const response = await axios.post('http://<172.19.1.52>:5000/api/subscribers', {
+          email,
+          name,
+        });
+        Alert.alert('Success', 'Subscriber added!');
         setEmail('');
+        setName('');
+      } catch (error) {
+        Alert.alert('Error', 'Something went wrong');
       }
     };
 

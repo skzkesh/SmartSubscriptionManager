@@ -66,22 +66,23 @@ mongoose.connect(process.env.MONGO_URI, {
   console.error('Error connecting to MongoDB:', error);
 });
 
-// const Subscriber = require('./models/Subscriber');
+const Subscriber = require('./models/Subscriber');
+// Routes
+router.post('/', async (req, res) => {
+  try {
+    const { email, name } = req.body;
 
-// // Add a new subscriber
-// app.post('/subscribe', async (req, res) => {
-//   const { email, name } = req.body;
+    const newSubscriber = new Subscriber({ email, name });
+    const saved = await newSubscriber.save();
 
-//   try {
-//     const newSubscriber = new Subscriber({ email, name });
-//     await newSubscriber.save();
+    res.status(201).json(saved);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
 
-//     res.status(201).json({ success: true, message: 'Subscriber added successfully!' });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ success: false, error: 'Failed to add subscriber' });
-//   }
-// });
+// Run server
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 // // Unsubscribe a subscriber
 // app.delete('/unsubscribe', async (req, res) => {
