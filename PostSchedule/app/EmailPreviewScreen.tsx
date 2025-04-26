@@ -7,7 +7,7 @@ const EmailPreview = () => {
   const router = useRouter();
 
   const handleConfirmPress = () => {
-    router.replace('/(tabs)/ConfirmationScreen');
+    router.push('/ConfirmationScreen');
   };
 
   return (
@@ -22,7 +22,7 @@ const EmailPreview = () => {
                     </Text>
                     <View style={styles.row}>
                         <Image
-                            source={require('../../assets/images/blank-profile-picture-973460_960_720.webp')} // make sure the path is correct
+                            source={require('../assets/images/blank-profile-picture-973460_960_720.webp')} // make sure the path is correct
                             style={styles.emailPreviewProfile}
                         />
                         <View style={styles.rowSender}>

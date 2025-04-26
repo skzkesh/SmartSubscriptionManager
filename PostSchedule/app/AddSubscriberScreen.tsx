@@ -21,9 +21,6 @@ const AddSubscriberScreen = () =>
 
      return (
      <View style={styles.container}>
-      <Text style={styles.title}>
-            Add Subscriber
-       </Text>
       <View style={styles.formContainer}>
         <Text style={styles.formTitle}>
           Name

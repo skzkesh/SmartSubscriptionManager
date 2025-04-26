@@ -1,62 +1,58 @@
 import React from 'react';
-import { StyleSheet, Text, View, Pressable, FlatList } from 'react-native';
+import { StyleSheet, Text, View, Pressable, FlatList, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 
 
-type Campaign = {
-    title: string,
-    campaignType: string,
+type User = {
+    email: string,
 };
 
-const campaigns: Campaign[] = [
-    { title: 'Campaign 1', campaignType: 'email' },
-    { title: 'Campaign 2', campaignType: 'email' },
+const users: User[] = [
+    { email: 'user@email.com' },
+    { email: 'friend@email.com' },
   ];
 
-const Dashboard = () => {
+const SubscriberList = () => {
   const router = useRouter();
 
-  const handleStartPress = () => {
-    router.push('/CreateCampaignScreen');
-  };
+    const handleAddPress = () => {
+        router.push('/AddSubscriberScreen');
+    };
 
-    const renderCampaignItem = ({ item }: { item: Campaign }) => (
-        <Pressable
-          style={styles.campaignItem}
-          // onPress={handleStartPress}
-        >
-          <Text style={styles.campaignTitle}>{item.title}</Text>
-          <Text style={styles.campaignType}>{item.campaignType}</Text>
-        </Pressable>
+    const renderCampaignItem = ({ item }: { item: User }) => (
+        <View style={styles.itemContainer}>
+          <Text style={styles.campaignTitle}>{item.email}</Text>
+          <Image
+            source={require('../../assets/images/minus-symbol-256x256.png')}
+            style={styles.emailPreviewProfile}
+          />
+        </View>
       );
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>
-        Marketing Campaign Planner
+        Subscriber List
       </Text>
       <View style={styles.buttonContainer}>
         <Pressable
-          onPress={handleStartPress}
+          onPress={handleAddPress}
           style={({ pressed }) => [
-            styles.createPostButton,
+            styles.addButton,
             {
               backgroundColor: pressed
                 ? '#505050'
                 : 'rgba(39, 39, 39, 1)',
             },
           ]}>
-          <Text style={styles.buttonText}>Create New Campaign</Text>
+          <Text style={styles.buttonText}>Add Subscriber</Text>
         </Pressable>
       </View>
       <View style={styles.savedCampaignContainer}>
-        <Text style={styles.savedCampaign}>
-            Saved Campaigns
-        </Text>
         <View style={{ width: '100%', flex: 1}}>
             <FlatList
-                data={campaigns}
-                keyExtractor={(item) => item.title}
+                data={users}
+                keyExtractor={(item) => item.email}
                 renderItem={renderCampaignItem}
             />
         </View>
@@ -73,6 +69,15 @@ const styles = StyleSheet.create({
     padding: 0,
     backgroundColor: '#FE0E0E0'
   },
+  itemContainer: {
+    flexDirection: 'row', 
+    justifyContent: 'space-between',
+    alignItems: 'center',   
+    backgroundColor: 'white',
+    padding: 10,
+    borderRadius: 8,
+    marginVertical: 5,
+  },
   buttonContainer: {
     width: '95%', 
     paddingHorizontal: 16, 
@@ -83,9 +88,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     paddingTop: 80,
   },
-  createPostButton: {
+  addButton: {
     width: '100%',
-    height: '30%',
+    height: '25%',
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 8,
@@ -130,6 +135,11 @@ const styles = StyleSheet.create({
   campaignType: {
     fontSize: 17,
   },
+  emailPreviewProfile: {
+    width: 40,
+    height: 40,
+    borderRadius: 40,
+  },
 });
 
-export default Dashboard;
+export default SubscriberList;

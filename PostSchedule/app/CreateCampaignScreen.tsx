@@ -18,7 +18,7 @@ const CreateCampaignScreen = () =>
         setTitle('');
         setSubject('');
         setMessage('');
-        router.replace('/(tabs)/EmailPreviewScreen');
+        router.push('/EmailPreviewScreen');
       }
     };
 
