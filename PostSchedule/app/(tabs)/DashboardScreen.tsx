@@ -1,6 +1,5 @@
 import React from 'react';
 import { StyleSheet, Text, View, Pressable, FlatList } from 'react-native';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useRouter } from 'expo-router';
 
 
