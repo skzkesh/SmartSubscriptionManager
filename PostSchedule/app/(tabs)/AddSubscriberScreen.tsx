@@ -2,71 +2,57 @@ import React from 'react';
 import { StyleSheet, Text, View, Pressable, FlatList, TextInput, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 
-const CreateCampaignScreen = () => 
+const AddSubscriberScreen = () => 
 {
     const router = useRouter();
-    const [title, setTitle] = React.useState("");
-    const [subject, setSubject] = React.useState("");
-    const [message, setMessage] = React.useState("");
+    const [name, setName] = React.useState("");
+    const [email, setEmail] = React.useState("");
 
-    const handleSubmit = () => {
-      if (!title || !subject || !message) {
+    const handleAdd = () => {
+      if (!name || !email) {
         Alert.alert('Error', 'All fields are required!');
       }
       else {
         Alert.alert('Success', `Your form is submitted.`);
-        setTitle('');
-        setSubject('');
-        setMessage('');
-        router.replace('/(tabs)/EmailPreviewScreen');
+        setName('');
+        setEmail('');
       }
     };
 
      return (
      <View style={styles.container}>
       <Text style={styles.title}>
-       Create Campaign
+            Add Subscriber
        </Text>
       <View style={styles.formContainer}>
         <Text style={styles.formTitle}>
-          Title
+          Name
         </Text>
         <TextInput
           style={styles.titleInput}
-          placeholder="Write your title"
-          value={title}
-          onChangeText={setTitle}
+          placeholder="User name"
+          value={name}
+          onChangeText={setName}
         />
         <Text style={styles.formTitle}>
-          Subject
+          Email Address
         </Text>
         <TextInput
           style={styles.subjectInput}
-          placeholder="Write your subject"
-          value={subject}
-          onChangeText={setSubject}
-        />
-        <Text style={styles.formTitle}>
-          Message
-        </Text>
-        <TextInput
-          style={styles.messageInput}
-          placeholder="Write your description"
-          multiline
-          numberOfLines={10}
-          value={message}
-          onChangeText={setMessage}
+          placeholder="User email address"
+          value={email}
+          onChangeText={setEmail}
         />
       </View>
       <Pressable
-          onPress={handleSubmit}
+          onPress={handleAdd}
           style={({ pressed }) => [
-            styles.createPostButton,
+            styles.addButton,
             {
               backgroundColor: pressed ? '#505050' : 'rgba(39, 39, 39, 1)',
             },
           ]}>
-          <Text style={styles.buttonText}>Submit</Text>
+          <Text style={styles.buttonText}>Add</Text>
         </Pressable>
     </View>
      );
@@ -124,7 +110,7 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     marginBottom: 10,
   },
-  createPostButton: {
+  addButton: {
     height: 50,
     paddingVertical: 12,
     paddingHorizontal: 20,
@@ -141,4 +127,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CreateCampaignScreen;
+export default AddSubscriberScreen;
