@@ -1,10 +1,9 @@
 import React from 'react';
 import { StyleSheet, Text, View, Pressable, FlatList } from 'react-native';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../navigationTypes';
+import { useRouter } from 'expo-router';
 
-export type Props = {
-  name: string;
-  baseEnthusiasmLevel?: number;
-};
 
 type Campaign = {
     title: string,
@@ -16,17 +15,19 @@ const campaigns: Campaign[] = [
     { title: 'Campaign 2', campaignType: 'email' },
   ];
 
-const Dashboard: React.FC<Props> = () => 
-{
-    const handleCampaignPress = (title: string) => {
-        console.log('Clicked campaign:', title);
-        // Navigate or open detail here
-      };
+type Props = NativeStackScreenProps<RootStackParamList, 'Dashboard'>;
+
+const Dashboard = () => {
+  const router = useRouter();
+
+  const handleStartPress = () => {
+    router.replace('/(tabs)/CreateCampaignScreen');
+  };
 
     const renderCampaignItem = ({ item }: { item: Campaign }) => (
         <Pressable
           style={styles.campaignItem}
-          onPress={() => handleCampaignPress(item.title)}
+          // onPress={handleStartPress}
         >
           <Text style={styles.campaignTitle}>{item.title}</Text>
           <Text style={styles.campaignType}>{item.campaignType}</Text>
@@ -40,7 +41,7 @@ const Dashboard: React.FC<Props> = () =>
       </Text>
       <View style={styles.buttonContainer}>
         <Pressable
-          //onPress={onIncrement}
+          onPress={handleStartPress}
           style={({ pressed }) => [
             styles.createPostButton,
             {

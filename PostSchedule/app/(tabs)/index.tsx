@@ -1,27 +1,27 @@
 import React from 'react';
 import { StyleSheet, Text, View, Pressable } from 'react-native';
+import { useRouter } from 'expo-router';
 
-export type Props = {
-  name: string;
-  baseEnthusiasmLevel?: number;
-};
 
-const StartScreen: React.FC<Props> = () => 
-{
+const StartScreen = () =>  {
+    const router = useRouter();
+
+    const handleStartPress = () => {
+        console.log('Navigating to tabs...');
+        // Navigating to a specific tab, for example, "explore"
+        router.replace('/(tabs)/DashboardScreen'); // Replace the current screen with Explore tab
+      };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.greeting}>
-        Welcome 
-      </Text>
+      <Text style={styles.greeting}>Welcome</Text>
       <View>
         <Pressable
-          //onPress={onIncrement}
+          onPress={handleStartPress}
           style={({ pressed }) => [
             styles.button,
             {
-              backgroundColor: pressed
-                ? '#505050'
-                : 'rgba(39, 39, 39, 1)',
+              backgroundColor: pressed ? '#505050' : 'rgba(39, 39, 39, 1)',
             },
           ]}>
           <Text style={styles.buttonText}>Click Here to Start</Text>
