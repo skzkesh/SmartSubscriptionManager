@@ -1,7 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, Pressable, FlatList } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../navigationTypes';
 import { useRouter } from 'expo-router';
 
 
@@ -14,8 +13,6 @@ const campaigns: Campaign[] = [
     { title: 'Campaign 1', campaignType: 'email' },
     { title: 'Campaign 2', campaignType: 'email' },
   ];
-
-type Props = NativeStackScreenProps<RootStackParamList, 'Dashboard'>;
 
 const Dashboard = () => {
   const router = useRouter();

@@ -7,9 +7,7 @@ const StartScreen = () =>  {
     const router = useRouter();
 
     const handleStartPress = () => {
-        console.log('Navigating to tabs...');
-        // Navigating to a specific tab, for example, "explore"
-        router.replace('/(tabs)/DashboardScreen'); // Replace the current screen with Explore tab
+        router.replace('/(tabs)/DashboardScreen');
       };
 
   return (

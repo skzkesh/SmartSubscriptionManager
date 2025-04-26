@@ -1,5 +1,6 @@
 import React from 'react';
-import { StyleSheet, Text, View, Pressable, FlatList } from 'react-native';
+import { StyleSheet, Text, View, Pressable, FlatList, TextInput, Alert } from 'react-native';
+import { useRouter } from 'expo-router';
 import { SelectList } from 'react-native-dropdown-select-list';
 //import ReactDOM from 'react-native-dom';
 //import { TextInput } from 'react-native-gesture-handler';
@@ -11,9 +12,20 @@ export type Props = {
 
 const CreateCampaignScreen = () => 
 {
-    const [selected, setSelected] = React.useState("");
-    const [name, setName] = React.useState("");
-    
+    const router = useRouter();
+    const [title, setTitle] = React.useState("");
+    const [subject, setSubject] = React.useState("");
+    const [message, setMessage] = React.useState("");
+
+    const handleSubmit = () => {
+      //router.replace('/(tabs)/PreviewCampaignScreen');
+      if (!title || !subject || !message) {
+        Alert.alert('Error', 'All fields are required!');
+      }
+      else {
+        Alert.alert('Success', `Your form is submitted.`);
+      }
+    };
 
      return (
      <View style={styles.container}>
@@ -22,21 +34,45 @@ const CreateCampaignScreen = () =>
        </Text>
       <View style={styles.formContainer}>
         <Text style={styles.formTitle}>
-          Campaign Title
+          Title
         </Text>
-        {/* <TextInput>
-          placeholder='Title'
-        </TextInput> */}
-      </View>
-      <form>
-        <label>Name
-        <input
-          type="text" 
-          value={name}
-          onChange={(e) => setName(e.target.value)}
+        <TextInput
+          style={styles.titleInput}
+          placeholder="Write your title"
+          value={title}
+          onChangeText={setTitle}
         />
-        </label>
-      </form>
+        <Text style={styles.formTitle}>
+          Subject
+        </Text>
+        <TextInput
+          style={styles.subjectInput}
+          placeholder="Write your subject"
+          value={subject}
+          onChangeText={setSubject}
+        />
+        <Text style={styles.formTitle}>
+          Message
+        </Text>
+        <TextInput
+          style={styles.messageInput}
+          placeholder="Write your description"
+          multiline
+          numberOfLines={10}
+          value={message}
+          onChangeText={setMessage}
+        />
+      </View>
+      <Pressable
+          onPress={handleSubmit}
+          style={({ pressed }) => [
+            styles.createPostButton,
+            {
+              backgroundColor: pressed ? '#505050' : 'rgba(39, 39, 39, 1)',
+            },
+          ]}>
+          <Text style={styles.buttonText}>Submit</Text>
+        </Pressable>
     </View>
      );
 };
@@ -44,9 +80,8 @@ const CreateCampaignScreen = () =>
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
+    padding: 16,
     justifyContent: 'flex-start',
-    padding: 0,
     backgroundColor: '#FE0E0E0'
   },
   buttonContainer: {
@@ -63,11 +98,39 @@ const styles = StyleSheet.create({
     
   },
   formTitle: {
-
+     fontSize: 20,
+     fontWeight: 'bold',
+     marginBottom: 8,
+  },
+  titleInput: {
+    height: 40,
+    padding: '3%',
+    fontSize: 17,
+    borderWidth: 1,           
+    borderColor: '#999',     
+    borderRadius: 3,
+    marginBottom: 10,
+  },
+  subjectInput: {
+    height: 40,
+    padding: '3%',
+    fontSize: 17,
+    borderWidth: 1,           
+    borderColor: '#999',     
+    borderRadius: 3,
+    marginBottom: 10,
+  },
+  messageInput: {
+    height: 250,
+    padding: '3%',
+    fontSize: 17,
+    borderWidth: 1,           
+    borderColor: '#999',     
+    borderRadius: 3,
+    marginBottom: 10,
   },
   createPostButton: {
-    width: '100%',
-    height: '30%',
+    height: 50,
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 8,
