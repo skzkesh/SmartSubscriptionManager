@@ -7,7 +7,7 @@ const EmailPreview = () => {
   const router = useRouter();
 
   const handleConfirmPress = () => {
-    router.replace('/(tabs)/CreateCampaignScreen');
+    router.replace('/(tabs)/ConfirmationScreen');
   };
 
   return (

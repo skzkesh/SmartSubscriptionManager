@@ -25,7 +25,7 @@ const ConfirmationScreen = () => {
   };
 
   const handleFinishPress = () => {
-    // handle submission
+    router.replace('/(tabs)/DashboardScreen');
   };
 
   const recipientOption = [

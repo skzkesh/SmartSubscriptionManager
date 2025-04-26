@@ -18,12 +18,12 @@ const CreateCampaignScreen = () =>
     const [message, setMessage] = React.useState("");
 
     const handleSubmit = () => {
-      //router.replace('/(tabs)/PreviewCampaignScreen');
       if (!title || !subject || !message) {
         Alert.alert('Error', 'All fields are required!');
       }
       else {
         Alert.alert('Success', `Your form is submitted.`);
+        router.replace('/(tabs)/EmailPreviewScreen');
       }
     };
 
