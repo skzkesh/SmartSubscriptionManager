@@ -3,17 +3,17 @@ import { StyleSheet, Text, View, Pressable, TextInput, Alert } from 'react-nativ
 import { useRouter } from 'expo-router';
 import validateEmail from '../../util/validation';
 import { SafeAreaView } from 'react-native';
-
-
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const StartScreen = () =>  {
     const router = useRouter();
-    const [username, setUsername] = React.useState("");
+    const [name, setUsername] = React.useState("");
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
 
-    const handleSignUpButon = () => {
-        if (!username || !email || !password){
+    const handleSignUpButon = async () => {
+        if (!name || !email || !password){
           Alert.alert('Empty Field', 'All field must be filled');
         }
         else if (!validateEmail(email)){
@@ -23,9 +23,34 @@ const StartScreen = () =>  {
           setUsername("")
           setEmail("");
           setPassword("");
+          await saveCredential();
+          Alert.alert('Successful Login', 'User sign up successfully');
           router.replace('/(tabs)/DashboardScreen');
         }
-      };
+    };
+
+    const saveCredential = async () => {
+      try {
+        const response = await axios.post('http://192.168.1.22:5000/api/auth/signup', {
+          name,
+          email,
+          password,
+        });
+        console.log(response.data);
+
+        // Save token to AsyncStorage 
+        const token = response.data.token;
+        await AsyncStorage.setItem('userToken', token);
+
+        // Save user details
+        await AsyncStorage.setItem('name', name);
+        await AsyncStorage.setItem('email', email);
+      }
+      catch (error) {
+        console.error(error);
+        Alert.alert('Error', 'Failed to sign up.');
+      }
+    }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -33,7 +58,7 @@ const StartScreen = () =>  {
       <TextInput
         style={styles.input}
         placeholder="Name"
-        value={username}
+        value={name}
         onChangeText={setUsername}
       />
       <TextInput
