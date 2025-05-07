@@ -9,57 +9,69 @@ import { SafeAreaView } from 'react-native';
 import validateEmail from '../util/validation';
 
 
-const LoginScreen = () =>  {
+// Handle sign up logic
+const SignUpScreen = () =>  {
     const router = useRouter();
+    const [name, setUsername] = React.useState("");
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
 
-    const handleLoginButon = async () => {
-        if (!email || !password){
+    const handleSignUpButon = async () => {
+        if (!name || !email || !password){
           Alert.alert('Empty Field', 'All field must be filled');
         }
         else if (!validateEmail(email)){
           Alert.alert('Invalid Email', 'Email format is invalid');
         }
         else {
+          setUsername("")
           setEmail("");
           setPassword("");
-          
-          const success = await validateLogin();
 
-          if (success){
-            Alert.alert('Success', 'User login successfully');
+          const success = await saveCredential();
+          console.log(success);
+
+          if (success) {
+            Alert.alert('Success', 'User successfully signed up');
             router.replace('/(tabs)/DashboardScreen');
           }
         }
-      };
+    };
 
-    const validateLogin = async () => {
+    const saveCredential = async () => {
       try {
-        const response = await axios.post('http://192.168.1.22:5000/api/auth/login', {
+        const response = await axios.post('http://192.168.1.22:5000/api/auth/signup', {
+          name,
           email,
           password,
         });
-
-        console.log('Status:', response.status); 
+        
+        console.log('Status:', response.status);
+        
         if (response.status == 201) {
+          await AsyncStorage.setItem('name', name);
           await AsyncStorage.setItem('email', email);
           return true;
         }
         else {
           return false;
         }
-
       }
-      catch(error){
+      catch (error) {
         console.error(error);
-        Alert.alert('Error', 'Failed to log in');
+        Alert.alert('Failed', 'Fail to save credential');
       }
     }
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.greeting}>Log In</Text>
+      <Text style={styles.greeting}>Sign Up</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Name"
+        value={name}
+        onChangeText={setUsername}
+      />
       <TextInput
         style={styles.input}
         placeholder="Email Address"
@@ -75,23 +87,23 @@ const LoginScreen = () =>  {
       />
       <View>
         <Pressable
-          onPress={handleLoginButon}
+          onPress={handleSignUpButon}
           style={({ pressed }) => [
             styles.button,
             {
               backgroundColor: pressed ? '#505050' : 'rgba(39, 39, 39, 1)',
             },
           ]}>
-          <Text style={styles.buttonText}>Log In</Text>
+          <Text style={styles.buttonText}>Sign Up</Text>
         </Pressable>
       </View>
       <Text style={{marginTop: 10}}>
-        Do not have an account? {' '}
+        Already have account? {' '}
         <Text
-          onPress={() => router.replace('/')}
+          onPress={() => router.replace('../LoginScreen')}
           style={{ color: 'blue', textDecorationLine: 'underline' }}
         >
-          Sign Up
+          Log In
         </Text>
       </Text>
     </SafeAreaView>
@@ -135,4 +147,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LoginScreen;
+export default SignUpScreen;
