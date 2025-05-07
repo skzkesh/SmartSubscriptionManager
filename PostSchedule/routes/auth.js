@@ -3,8 +3,9 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
 
-// Import User model
+// Import model
 const User = require('../models/User');
+const Subscriber = require('../models/Subscriber');
 
 // Create a new user upon successful sign up
 router.post('/signup', async (req, res) => {
@@ -29,7 +30,7 @@ router.post('/signup', async (req, res) => {
     if (savedUser) {
       const successMessage = {
         message: 'User created successfully',
-        user: savedUser,
+        userId: savedUser._id,
       };
       return res.status(201).json(successMessage); // Return success response
     } else {
@@ -60,9 +61,42 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ message: 'Invalid password' });
     }
 
-    return res.status(200).json({ message: 'Login successful', user: existingUser });
+    return res.status(200).json({ message: 'Login successful', userId });
   } catch (err) {
     return res.status(500).json({ message: 'Server error', error: err.message });
+  }
+});
+
+router.post('/subscriber', async (req, res) => {
+  try {
+    const { name, email } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ message: 'All fields are required' });
+    }
+
+    const existingSubscriber = await Subscriber.findOne({ email, userId });
+
+    if (existingSubscriber){
+      return res.status(400).json({ message: 'Subscriber already in database' });
+    }
+
+    const newSubscriber = new Subscriber({ name, email });
+    const savedSubscriber = await newSubscriber.save();
+
+    if (savedSubscriber) {
+      const successMessage = {
+        message: 'Subscriber added successfully',
+        subscriber: savedSubscriber,
+      };
+      return res.status(201).json(successMessage); 
+    } else {
+      const errorMessage = { message: 'Failed to add subscriber' };
+      return res.status(500).json(errorMessage); 
+    }
+  }
+  catch (err){
+
   }
 });
 

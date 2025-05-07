@@ -1,23 +1,61 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import { StyleSheet, Text, View, Pressable, FlatList, TextInput, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
-import axios from 'axios';
+
 
 const AddSubscriberScreen = () => 
 {
     const router = useRouter();
     const [name, setName] = React.useState("");
     const [email, setEmail] = React.useState("");
+    const [userId, setUserId] = React.useState("");
+
+    // useEffect to retrieve userId from AsyncStorage when the component mounts
+    useEffect(() => {
+      const getUserId = async () => {
+        try {
+          const storedUserId = await AsyncStorage.getItem('userId');
+          if (storedUserId) {
+            setUserId(storedUserId);
+          } else {
+            console.warn('User ID not found in AsyncStorage');
+            // Handle the case where userId is not found (e.g., redirect to login)
+          }
+        } catch (error) {
+          console.error('Error retrieving user ID:', error);
+        }
+      };
+
+      getUserId();
+    }, []);
+
+    const addValidate = () => {
+      if (name.trim() !== '' && email.trim() !== ''){
+        return true;
+      }
+      return false;
+    };
 
     const handleAdd = async () => {
       try {
-        const response = await axios.post('http://<172.19.1.52>:5000/api/subscribers', {
+        if (addValidate()){
+          const response = await axios.post('http://192.168.1.22:5000/api/auth/subscribers', {
           email,
           name,
-        });
-        Alert.alert('Success', 'Subscriber added!');
-        setEmail('');
-        setName('');
+          userId,
+          });
+
+          Alert.alert('Success', 'Subscriber added!');
+
+          setEmail('');
+          setName('');
+        }
+        else {
+          Alert.alert('Error', 'All field are required');
+        }       
       } catch (error) {
         Alert.alert('Error', 'Something went wrong');
       }

@@ -49,6 +49,8 @@ const SignUpScreen = () =>  {
         console.log('Status:', response.status);
         
         if (response.status == 201) {
+          const userId = response.data.userId; 
+          await AsyncStorage.setItem('userId', userId);
           await AsyncStorage.setItem('name', name);
           await AsyncStorage.setItem('email', email);
           return true;
