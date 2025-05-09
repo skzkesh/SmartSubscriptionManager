@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -7,12 +7,13 @@ import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native';
 
 import validateEmail from '../util/validation';
+import BASE_URL from '../config';
 
 
 const LoginScreen = () =>  {
     const router = useRouter();
-    const [email, setEmail] = React.useState("");
-    const [password, setPassword] = React.useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
 
     const handleLoginButon = async () => {
         if (!email || !password){
@@ -26,23 +27,25 @@ const LoginScreen = () =>  {
           setPassword("");
           
           const success = await validateLogin();
+          console.log(success);
 
           if (success){
             Alert.alert('Success', 'User login successfully');
-            router.replace('/(tabs)/DashboardScreen');
+            router.replace('/(tabs)');
           }
         }
       };
 
     const validateLogin = async () => {
       try {
-        const response = await axios.post('http://192.168.1.22:5000/api/auth/login', {
+        const response = await axios.post(`${BASE_URL}/api/auth/login`, {
           email,
           password,
         });
 
         console.log('Status:', response.status); 
-        if (response.status == 201) {
+        if (response.status == 200) {
+          //await AsyncStorage.setItem('userId', userId); 
           await AsyncStorage.setItem('email', email);
           return true;
         }
@@ -79,13 +82,13 @@ const LoginScreen = () =>  {
           style={({ pressed }) => [
             styles.button,
             {
-              backgroundColor: pressed ? '#505050' : 'rgba(39, 39, 39, 1)',
+              backgroundColor: pressed ? '#29353C' : '#44576D',
             },
           ]}>
           <Text style={styles.buttonText}>Log In</Text>
         </Pressable>
       </View>
-      <Text style={{marginTop: 10}}>
+      <Text style={{marginTop: 10, color: '#29353C'}}>
         Do not have an account? {' '}
         <Text
           onPress={() => router.replace('/')}
@@ -104,10 +107,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   greeting: {
-    marginTop: 150,
-    marginBottom: 45,
+    marginTop: 170,
+    marginBottom: 30,
     fontSize: 30,
     textAlign: 'center',
+    fontWeight: 'bold',
+    color:  '#44576D',
   },
   input: {
     width: 300,
@@ -116,12 +121,12 @@ const styles = StyleSheet.create({
     margin: 5,
     fontSize: 17,
     borderWidth: 1,           
-    borderColor: '#999',     
+    borderColor: '#768A96',     
     borderRadius: 8,
     marginBottom: 10,
   },
   button: {
-    marginTop: 30,
+    marginTop: 20,
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 8,

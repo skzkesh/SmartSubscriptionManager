@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Ionicons } from '@expo/vector-icons';
 import {
   StyleSheet,
   Text,
@@ -13,20 +14,12 @@ import RNPickerSelect from 'react-native-picker-select';
 
 const ConfirmationScreen = () => {
   const router = useRouter();
-  const [recipient, setRecipient] = React.useState<string | null>(null);
-  const [status, setStatus] = React.useState<string | null>(null);
+  const [recipient, setRecipient] = useState<string | undefined>(undefined);
+  const [status, setStatus] = useState<string | undefined>(undefined);
 
-  const handleRecipientChange = (value: string) => {
-    setRecipient(value);
-  };
-
-  const handleStatusChange = (value: string) => {
-    setStatus(value);
-  };
-
-  const handleFinishPress = () => {
-    router.replace('/(tabs)/DashboardScreen');
-  };
+  const handleRecipientChange = (value: string) => setRecipient(value);
+  const handleStatusChange = (value: string) => setStatus(value);
+  const handleFinishPress = () => router.replace('/(tabs)/DashboardScreen');
 
   const recipientOption = [
     { label: 'All', value: 'all' },
@@ -44,25 +37,44 @@ const ConfirmationScreen = () => {
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        keyboardShouldPersistTaps="handled"
+      >
         <Text style={styles.title}>Confirm</Text>
         <View style={styles.formContainer}>
-          <Text style={styles.formTitle}>Choose Recipient {recipient}</Text>
+          <Text style={styles.formTitle}>Choose Recipient</Text>
           <RNPickerSelect
             onValueChange={handleRecipientChange}
             items={recipientOption}
-            style={pickerSelectStyles}
-            placeholder={{ label: 'Select an option...', value: null }}
             value={recipient}
+            placeholder={{ label: 'Select an option...', value: undefined }}
+            useNativeAndroidPickerStyle={false}
+            style={{
+              inputIOS: pickerSelectStyles.inputIOS,
+              inputAndroid: pickerSelectStyles.inputAndroid,
+              iconContainer: {
+                top: 15,
+                right: 12,
+                zIndex: 9999,  // Ensure the dropdown icon is on top
+              },
+            }}
+            Icon={() => {
+              return <Ionicons name="chevron-down" size={24} color="gray" />;
+            }}
           />
 
-          <Text style={styles.formTitle}>Status {status}</Text>
+          <Text style={styles.formTitle}>Status</Text>
           <RNPickerSelect
             onValueChange={handleStatusChange}
             items={statusOption}
-            style={pickerSelectStyles}
-            placeholder={{ label: 'Select an option...', value: null }}
+            placeholder={{ label: 'Select an option...', value: undefined }}
             value={status}
+            style={{
+              inputIOS: pickerSelectStyles.inputIOS,
+              inputAndroid: pickerSelectStyles.inputAndroid,
+              viewContainer: pickerSelectStyles.viewContainer,
+            }}
           />
         </View>
 
@@ -86,14 +98,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    justifyContent: 'flex-start',
     backgroundColor: '#FE0E0E0',
+  },
+  scrollContent: {
+    flexGrow: 1,
+    justifyContent: 'flex-start',
   },
   title: {
     fontSize: 30,
     margin: 20,
     textAlign: 'center',
-    paddingTop: 80,
   },
   formContainer: {
     marginBottom: 30,
@@ -130,10 +144,6 @@ const pickerSelectStyles = StyleSheet.create({
     color: 'black',
     paddingRight: 30,
   },
-  inputIOSContainer: {
-    marginVertical: 10,
-    width: '100%',
-  },
   inputAndroid: {
     fontSize: 16,
     paddingVertical: 12,
@@ -143,6 +153,9 @@ const pickerSelectStyles = StyleSheet.create({
     borderRadius: 5,
     color: 'black',
     paddingRight: 30,
+  },
+  viewContainer: {
+    marginVertical: 10,
     width: '100%',
   },
 });

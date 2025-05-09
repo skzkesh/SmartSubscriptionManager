@@ -5,6 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StyleSheet, Text, View, Pressable, FlatList, TextInput, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 
+import BASE_URL from '../config';
 
 const AddSubscriberScreen = () => 
 {
@@ -41,17 +42,23 @@ const AddSubscriberScreen = () =>
 
     const handleAdd = async () => {
       try {
+        console.log("userId:", userId);
+        console.log("Validation result:", addValidate(), name, email);
+
         if (addValidate()){
-          const response = await axios.post('http://192.168.1.22:5000/api/auth/subscribers', {
+          const response = await axios.post(`${BASE_URL}/api/auth/subscriber`, {
           email,
           name,
           userId,
           });
 
-          Alert.alert('Success', 'Subscriber added!');
+          console.log(response.status);
+          if (response.status == 201){
+            Alert.alert('Success', 'Subscriber added!');
 
-          setEmail('');
-          setName('');
+            setEmail('');
+            setName('');
+          }
         }
         else {
           Alert.alert('Error', 'All field are required');
@@ -88,7 +95,7 @@ const AddSubscriberScreen = () =>
           style={({ pressed }) => [
             styles.addButton,
             {
-              backgroundColor: pressed ? '#505050' : 'rgba(39, 39, 39, 1)',
+              backgroundColor: pressed ? '#29353C' : '#44576D',
             },
           ]}>
           <Text style={styles.buttonText}>Add</Text>
@@ -108,12 +115,6 @@ const styles = StyleSheet.create({
     width: '95%', 
     paddingHorizontal: 16, 
   },
-  title: {
-    fontSize: 30,
-    margin: 20,
-    textAlign: 'center',
-    paddingTop: 80,
-  },
   formContainer: {
     
   },
@@ -121,6 +122,7 @@ const styles = StyleSheet.create({
      fontSize: 20,
      fontWeight: 'bold',
      marginBottom: 8,
+     color: '#29353C',
   },
   titleInput: {
     height: 40,

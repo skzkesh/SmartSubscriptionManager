@@ -13,8 +13,9 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
-const authRoutes = require('./routes/auth');
-app.use('/api/auth', authRoutes);
+app.use('/api/auth', require('./routes/auth'));
+app.use('/api/subscriber', require('./routes/subscriber'));
+app.use('/api/campaign', require('./routes/campaign'));
 
 app.get('/', (req, res) => {
   res.send('Email Marketing API is running 🚀');

@@ -1,6 +1,10 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
+import axios from 'axios';
+
 import { StyleSheet, Text, View, Pressable, FlatList } from 'react-native';
 import { useRouter } from 'expo-router';
+
+import BASE_URL from '../../config'
 
 
 type Campaign = {
@@ -8,27 +12,29 @@ type Campaign = {
     campaignType: string,
 };
 
-const campaigns: Campaign[] = [
-    { title: 'Campaign 1', campaignType: 'email' },
-    { title: 'Campaign 2', campaignType: 'email' },
-  ];
-
 const Dashboard = () => {
   const router = useRouter();
+  const [campaigns, setCampaigns] = useState();
 
   const handleStartPress = () => {
     router.push('/CreateCampaignScreen');
   };
 
-    const renderCampaignItem = ({ item }: { item: Campaign }) => (
-        <Pressable
-          style={styles.campaignItem}
-          // onPress={handleStartPress}
-        >
-          <Text style={styles.campaignTitle}>{item.title}</Text>
-          <Text style={styles.campaignType}>{item.campaignType}</Text>
-        </Pressable>
-      );
+  const renderCampaignItem = ({ item }: { item: Campaign }) => (
+      <Pressable
+        style={styles.campaignItem}
+      >
+        <Text style={styles.campaignTitle}>{item.title}</Text>
+        <Text style={styles.campaignType}>{item.campaignType}</Text>
+      </Pressable>
+    );
+  
+  useEffect(() => {
+    axios
+      .get(`${BASE_URL}/api/campaign/getAllCampaign`)
+      .then((response) => setCampaigns(response.data))
+      .catch((error) => console.error(error));
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -42,8 +48,8 @@ const Dashboard = () => {
             styles.createPostButton,
             {
               backgroundColor: pressed
-                ? '#505050'
-                : 'rgba(39, 39, 39, 1)',
+                ? '#29353C'
+                : '#44576D',
             },
           ]}>
           <Text style={styles.buttonText}>Create New Campaign</Text>
@@ -81,16 +87,18 @@ const styles = StyleSheet.create({
     fontSize: 30,
     margin: 20,
     textAlign: 'center',
-    paddingTop: 80,
+    marginTop: 100,
+    fontWeight: 'bold',
+    color: '#29353C',
   },
   createPostButton: {
     width: '100%',
-    height: '30%',
+    height: 85,
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 8,
     marginVertical: 20,
-    marginBottom: 8,
+    marginBottom: 30,
     alignItems: 'center',
     justifyContent: 'center'
   },
@@ -113,6 +121,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     textAlign: 'left',
     paddingLeft: 5,
+    color: '#29353C',
   },
   campaignItem: {
     height: 90,

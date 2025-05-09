@@ -7,6 +7,7 @@ import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native';
 
 import validateEmail from '../util/validation';
+import BASE_URL from '../config';
 
 
 // Handle sign up logic
@@ -24,23 +25,22 @@ const SignUpScreen = () =>  {
           Alert.alert('Invalid Email', 'Email format is invalid');
         }
         else {
-          setUsername("")
-          setEmail("");
-          setPassword("");
-
           const success = await saveCredential();
           console.log(success);
 
           if (success) {
+            setUsername("")
+            setEmail("");
+            setPassword("");
             Alert.alert('Success', 'User successfully signed up');
-            router.replace('/(tabs)/DashboardScreen');
+            router.replace('/(tabs)');
           }
         }
     };
 
     const saveCredential = async () => {
       try {
-        const response = await axios.post('http://192.168.1.22:5000/api/auth/signup', {
+        const response = await axios.post(`${BASE_URL}/api/auth/signup`, {
           name,
           email,
           password,
@@ -50,6 +50,7 @@ const SignUpScreen = () =>  {
         
         if (response.status == 201) {
           const userId = response.data.userId; 
+          console.log(userId);
           await AsyncStorage.setItem('userId', userId);
           await AsyncStorage.setItem('name', name);
           await AsyncStorage.setItem('email', email);
@@ -93,13 +94,13 @@ const SignUpScreen = () =>  {
           style={({ pressed }) => [
             styles.button,
             {
-              backgroundColor: pressed ? '#505050' : 'rgba(39, 39, 39, 1)',
+              backgroundColor: pressed ? '#29353C' : '#44576D',
             },
           ]}>
           <Text style={styles.buttonText}>Sign Up</Text>
         </Pressable>
       </View>
-      <Text style={{marginTop: 10}}>
+      <Text style={{marginTop: 10, color: '#29353C'}}>
         Already have account? {' '}
         <Text
           onPress={() => router.replace('../LoginScreen')}
@@ -118,10 +119,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   greeting: {
-    marginTop: 150,
-    marginBottom: 45,
+    marginTop: 170,
+    marginBottom: 30,
     fontSize: 30,
     textAlign: 'center',
+    fontWeight: 'bold',
+    color:  '#44576D',
   },
   input: {
     width: 300,
@@ -130,12 +133,12 @@ const styles = StyleSheet.create({
     margin: 5,
     fontSize: 17,
     borderWidth: 1,           
-    borderColor: '#999',     
+    borderColor: '#768A96',     
     borderRadius: 8,
     marginBottom: 10,
   },
   button: {
-    marginTop: 30,
+    marginTop: 20,
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 8,

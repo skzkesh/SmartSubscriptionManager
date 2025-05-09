@@ -1,10 +1,61 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import { StyleSheet, Text, View, Image, Pressable, FlatList, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 
+import BASE_URL from '../config';
 
 const EmailPreview = () => {
   const router = useRouter();
+  const [name, setName] = useState("");
+  const [campaignSubject, setCampaignSubject] = useState("");
+  const [campaignMessage, setCampaignMessage] = useState("");
+
+  useEffect(() => {
+    const getName = async () => {
+      try {
+        const email = await AsyncStorage.getItem('email');
+        console.log('Stored email:', email); 
+        const response = await axios.post(`${BASE_URL}/api/auth/getName`, {
+          email,
+        });
+
+        if (response.data?.name) {
+          setName(response.data.name);
+        }
+      } catch (e) {
+        console.error('Failed to load user name:', e);
+      }
+    };
+
+    const getCampaignSubject = async () => {
+      try {
+        const subject = await AsyncStorage.getItem('campaignSubject');
+        if (subject !== null) {
+          setCampaignSubject(subject);
+        }
+      } catch (e) {
+        console.error('Failed to load campaign subject:', e);
+      }
+    };
+
+    const getCampaignMessage = async () => {
+      try {
+        const message = await AsyncStorage.getItem('campaignMessage');
+        if (message !== null) {
+          setCampaignMessage(message);
+        }
+      } catch (e) {
+        console.error('Failed to load campaign message:', e);
+      }
+    };
+  
+    getName();
+    getCampaignSubject();
+    getCampaignMessage();
+  }, []);
 
   const handleConfirmPress = () => {
     router.push('/ConfirmationScreen');
@@ -18,7 +69,7 @@ const EmailPreview = () => {
             </Text>
             <View style={styles.previewContainer}>
                     <Text style={styles.emailPreviewSubject}>
-                        This is example emails
+                        {campaignSubject}
                     </Text>
                     <View style={styles.row}>
                         <Image
@@ -35,7 +86,7 @@ const EmailPreview = () => {
                         </View>
                     </View>
                     <Text style={styles.emailPreviewMessage}>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                      {campaignMessage}
                     </Text>
             </View>
             <Pressable
@@ -71,6 +122,7 @@ const styles = StyleSheet.create({
     paddingTop: 80,
   },
   previewContainer: {
+    width: '95%',
     paddingTop: 10,
     paddingHorizontal: 10,
     borderWidth: 1,           
@@ -109,8 +161,8 @@ const styles = StyleSheet.create({
     marginLeft: 15,
   },
   confirmButton: {
-    width: '35%',
-    height: '10%',
+    width: 120,
+    height: 50,
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 8,

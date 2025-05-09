@@ -1,65 +1,66 @@
-import React from 'react';
-import { StyleSheet, Text, View, Pressable, FlatList, Image } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+
+import { StyleSheet, Text, View, Pressable, FlatList } from 'react-native';
 import { useRouter } from 'expo-router';
 
+import BASE_URL from '../../config';
 
 type User = {
-    email: string,
+  email: string;
 };
-
-const users: User[] = [
-    { email: 'user@email.com' },
-    { email: 'friend@email.com' },
-  ];
 
 const SubscriberList = () => {
   const router = useRouter();
+  const [subscribers, setSubscribers] = useState<User[]>([]);
 
-    const handleAddPress = () => {
-        router.push('/AddSubscriberScreen');
-    };
+  const handleAddPress = () => {
+    router.push('/AddSubscriberScreen');
+  };
 
-    const renderCampaignItem = ({ item }: { item: User }) => (
-        <View style={styles.itemContainer}>
-          <Text style={styles.campaignTitle}>{item.email}</Text>
-          <Image
-            source={require('../../assets/images/minus-symbol-256x256.png')}
-            style={styles.emailPreviewProfile}
-          />
-        </View>
-      );
+  useEffect(() => {
+    axios
+      .get(`${BASE_URL}/api/users/getAllSubscriber`)
+      .then((response) => setSubscribers(response.data))
+      .catch((error) => console.error(error));
+  }, []);
+
+  const renderCampaignItem = ({ item }: { item: User }) => (
+    <View style={styles.itemContainer}>
+      <Text style={styles.campaignTitle}>{item.email}</Text>
+    </View>
+  );
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>
-        Subscriber List
-      </Text>
+      <Text style={styles.title}>Subscriber List</Text>
+
       <View style={styles.buttonContainer}>
         <Pressable
           onPress={handleAddPress}
           style={({ pressed }) => [
             styles.addButton,
             {
-              backgroundColor: pressed
-                ? '#505050'
-                : 'rgba(39, 39, 39, 1)',
+              backgroundColor: pressed ? '#29353C' : '#44576D',
             },
-          ]}>
+          ]}
+        >
           <Text style={styles.buttonText}>Add Subscriber</Text>
         </Pressable>
       </View>
-      <View style={styles.savedCampaignContainer}>
-        <View style={{ width: '100%', flex: 1}}>
-            <FlatList
-                data={users}
-                keyExtractor={(item) => item.email}
-                renderItem={renderCampaignItem}
-            />
-        </View>
+
+      <View style={styles.subscriberListContainer}>
+        <FlatList
+          data={subscribers}
+          keyExtractor={(item) => item.email}
+          renderItem={renderCampaignItem}
+          ListEmptyComponent={<Text>No subscribers found.</Text>}
+        />
       </View>
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
@@ -87,6 +88,8 @@ const styles = StyleSheet.create({
     margin: 20,
     textAlign: 'center',
     paddingTop: 80,
+    fontWeight: 'bold',
+    color:  '#44576D',
   },
   addButton: {
     width: '100%',
@@ -104,7 +107,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
   },
-  savedCampaignContainer: {
+  subscriberListContainer: {
     width: '95%',
     flex: 1,
     paddingHorizontal: 16,

@@ -1,6 +1,12 @@
 import React from 'react';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import { StyleSheet, Text, View, Pressable, FlatList, TextInput, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
+
+import BASE_URL from '../config'
+
 
 const CreateCampaignScreen = () => 
 {
@@ -9,19 +15,50 @@ const CreateCampaignScreen = () =>
     const [subject, setSubject] = React.useState("");
     const [message, setMessage] = React.useState("");
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
       if (!title || !subject || !message) {
         Alert.alert('Error', 'All fields are required!');
       }
       else {
-        Alert.alert('Success', `Your form is submitted.`);
         setTitle('');
         setSubject('');
         setMessage('');
-        router.push('/EmailPreviewScreen');
+
+        const success = await saveCampaign();
+
+        if (success){
+          Alert.alert('Success', 'Your campaign is saved');
+          router.push('/EmailPreviewScreen');
+        }
       }
     };
 
+    const saveCampaign = async () => {
+      try {
+        const userId = await AsyncStorage.getItem('userId');
+        const response = await axios.post(`${BASE_URL}/api/campaign/saveCampaign`, {
+          title,
+          subject,
+          message,
+          userId,
+        });
+        
+        console.log('Status:', response.status);
+        
+        if (response.status == 201) {
+          await AsyncStorage.setItem('campaignSubject', subject);
+          await AsyncStorage.setItem('campaignMessage', message);
+          return true;
+        }
+        else {
+          return false;
+        }
+      }
+      catch (error) {
+        console.error(error);
+        Alert.alert('Failed', 'Fail to save campaign');
+      }
+    }
      return (
      <View style={styles.container}>
       <Text style={styles.title}>
@@ -63,7 +100,7 @@ const CreateCampaignScreen = () =>
           style={({ pressed }) => [
             styles.createPostButton,
             {
-              backgroundColor: pressed ? '#505050' : 'rgba(39, 39, 39, 1)',
+              backgroundColor: pressed ? '#29353C' : '#44576D',
             },
           ]}>
           <Text style={styles.buttonText}>Submit</Text>
@@ -87,7 +124,8 @@ const styles = StyleSheet.create({
     fontSize: 30,
     margin: 20,
     textAlign: 'center',
-    paddingTop: 80,
+    fontWeight: 'bold',
+    color: '#29353C',
   },
   formContainer: {
     
@@ -95,6 +133,7 @@ const styles = StyleSheet.create({
   formTitle: {
      fontSize: 20,
      fontWeight: 'bold',
+     color: '#29353C',
      marginBottom: 8,
   },
   titleInput: {
@@ -102,7 +141,7 @@ const styles = StyleSheet.create({
     padding: '3%',
     fontSize: 17,
     borderWidth: 1,           
-    borderColor: '#999',     
+    borderColor: '#768A96',     
     borderRadius: 3,
     marginBottom: 10,
   },
@@ -110,8 +149,8 @@ const styles = StyleSheet.create({
     height: 40,
     padding: '3%',
     fontSize: 17,
-    borderWidth: 1,           
-    borderColor: '#999',     
+    borderWidth: 1,     
+    borderColor: '#768A96',      
     borderRadius: 3,
     marginBottom: 10,
   },
@@ -120,7 +159,7 @@ const styles = StyleSheet.create({
     padding: '3%',
     fontSize: 17,
     borderWidth: 1,           
-    borderColor: '#999',     
+    borderColor: '#768A96',     
     borderRadius: 3,
     marginBottom: 10,
   },
