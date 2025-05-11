@@ -6,7 +6,7 @@ import { StyleSheet, Text, View, Pressable, TextInput, Alert } from 'react-nativ
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native';
 
-import validateEmail from '../util/validation';
+import validation from '../util/validation';
 import BASE_URL from '../config';
 
 
@@ -19,7 +19,7 @@ const LoginScreen = () =>  {
         if (!email || !password){
           Alert.alert('Empty Field', 'All field must be filled');
         }
-        else if (!validateEmail(email)){
+        else if (!validation.validateEmail(email)){
           Alert.alert('Invalid Email', 'Email format is invalid');
         }
         else {
@@ -38,14 +38,14 @@ const LoginScreen = () =>  {
 
     const validateLogin = async () => {
       try {
-        const response = await axios.post(`${BASE_URL}/api/auth/login`, {
+        const response = await axios.post(`${BASE_URL}/api/auth/log-in`, {
           email,
           password,
         });
 
         console.log('Status:', response.status); 
         if (response.status == 200) {
-          //await AsyncStorage.setItem('userId', userId); 
+          await AsyncStorage.setItem('userId', response.data.userId); 
           await AsyncStorage.setItem('email', email);
           return true;
         }
@@ -88,11 +88,11 @@ const LoginScreen = () =>  {
           <Text style={styles.buttonText}>Log In</Text>
         </Pressable>
       </View>
-      <Text style={{marginTop: 10, color: '#29353C'}}>
+      <Text style={{marginTop: 10, color: '#44576D'}}>
         Do not have an account? {' '}
         <Text
           onPress={() => router.replace('/')}
-          style={{ color: 'blue', textDecorationLine: 'underline' }}
+          style={{ color: '#44576D', textDecorationLine: 'underline', fontWeight:'bold' }}
         >
           Sign Up
         </Text>

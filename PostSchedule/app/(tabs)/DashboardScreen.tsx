@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { StyleSheet, Text, View, Pressable, FlatList } from 'react-native';
 import { useRouter } from 'expo-router';
@@ -7,39 +8,48 @@ import { useRouter } from 'expo-router';
 import BASE_URL from '../../config'
 
 
-type Campaign = {
-    title: string,
-    campaignType: string,
+type Subscription = {
+    name: string,
+    category: string,
 };
 
 const Dashboard = () => {
   const router = useRouter();
-  const [campaigns, setCampaigns] = useState();
+  const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
 
   const handleStartPress = () => {
-    router.push('/CreateCampaignScreen');
+    router.push('../SubscriptionFormScreen');
   };
 
-  const renderCampaignItem = ({ item }: { item: Campaign }) => (
+  const renderCampaignItem = ({ item }: { item: Subscription }) => (
       <Pressable
         style={styles.campaignItem}
       >
-        <Text style={styles.campaignTitle}>{item.title}</Text>
-        <Text style={styles.campaignType}>{item.campaignType}</Text>
+        <Text style={styles.campaignTitle}>{item.name}</Text>
+        <Text style={styles.campaignType}>{item.category}</Text>
       </Pressable>
     );
   
-  useEffect(() => {
-    axios
-      .get(`${BASE_URL}/api/campaign/getAllCampaign`)
-      .then((response) => setCampaigns(response.data))
-      .catch((error) => console.error(error));
-  }, []);
+    useEffect(() => {
+      const fetchSubscriptions = async () => {
+        try {
+          const email = await AsyncStorage.getItem('email'); // or however you're storing it
+          const response = await axios.post(`${BASE_URL}/api/subscription/get-subscription-all`, {
+            email,
+          });
+          setSubscriptions(response.data.subscriptions);
+        } catch (error) {
+          console.error("Error fetching subscriptions:", error);
+        }
+      };
+    
+      fetchSubscriptions();
+    }, []);
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>
-        Marketing Campaign Planner
+        Smart Subscription Manager
       </Text>
       <View style={styles.buttonContainer}>
         <Pressable
@@ -52,17 +62,17 @@ const Dashboard = () => {
                 : '#44576D',
             },
           ]}>
-          <Text style={styles.buttonText}>Create New Campaign</Text>
+          <Text style={styles.buttonText}>Add New Subscription</Text>
         </Pressable>
       </View>
       <View style={styles.savedCampaignContainer}>
         <Text style={styles.savedCampaign}>
-            Saved Campaigns
+            My Subscriptions
         </Text>
         <View style={{ width: '100%', flex: 1}}>
             <FlatList
-                data={campaigns}
-                keyExtractor={(item) => item.title}
+                data={subscriptions}
+                keyExtractor={(item) => item.name}
                 renderItem={renderCampaignItem}
             />
         </View>

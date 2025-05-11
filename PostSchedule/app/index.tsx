@@ -6,7 +6,7 @@ import { StyleSheet, Text, View, Pressable, TextInput, Alert } from 'react-nativ
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native';
 
-import validateEmail from '../util/validation';
+import validation from '../util/validation';
 import BASE_URL from '../config';
 
 
@@ -21,7 +21,7 @@ const SignUpScreen = () =>  {
         if (!name || !email || !password){
           Alert.alert('Empty Field', 'All field must be filled');
         }
-        else if (!validateEmail(email)){
+        else if (!validation.validateEmail(email)){
           Alert.alert('Invalid Email', 'Email format is invalid');
         }
         else {
@@ -40,9 +40,9 @@ const SignUpScreen = () =>  {
 
     const saveCredential = async () => {
       try {
-        const response = await axios.post(`${BASE_URL}/api/auth/signup`, {
-          name,
+        const response = await axios.post(`${BASE_URL}/api/auth/sign-up`, {
           email,
+          name,
           password,
         });
         
@@ -50,7 +50,6 @@ const SignUpScreen = () =>  {
         
         if (response.status == 201) {
           const userId = response.data.userId; 
-          console.log(userId);
           await AsyncStorage.setItem('userId', userId);
           await AsyncStorage.setItem('name', name);
           await AsyncStorage.setItem('email', email);
@@ -72,18 +71,21 @@ const SignUpScreen = () =>  {
       <TextInput
         style={styles.input}
         placeholder="Name"
+        placeholderTextColor={'#6A7E97'}
         value={name}
         onChangeText={setUsername}
       />
       <TextInput
         style={styles.input}
         placeholder="Email Address"
+        placeholderTextColor={'#6A7E97'}
         value={email}
         onChangeText={setEmail}
       />
       <TextInput
         style={styles.input}
         placeholder="Password"
+        placeholderTextColor={'#6A7E97'}
         value={password}
         onChangeText={setPassword}
         secureTextEntry={true}
@@ -94,17 +96,17 @@ const SignUpScreen = () =>  {
           style={({ pressed }) => [
             styles.button,
             {
-              backgroundColor: pressed ? '#29353C' : '#44576D',
+              backgroundColor : 'white',
             },
           ]}>
           <Text style={styles.buttonText}>Sign Up</Text>
         </Pressable>
       </View>
-      <Text style={{marginTop: 10, color: '#29353C'}}>
+      <Text style={{marginTop: 10, color: 'white'}}>
         Already have account? {' '}
         <Text
           onPress={() => router.replace('../LoginScreen')}
-          style={{ color: 'blue', textDecorationLine: 'underline' }}
+          style={{ color: 'white', textDecorationLine: 'underline', fontWeight:'bold' }}
         >
           Log In
         </Text>
@@ -117,6 +119,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
+    backgroundColor: '#44576D',
   },
   greeting: {
     marginTop: 170,
@@ -124,7 +127,7 @@ const styles = StyleSheet.create({
     fontSize: 30,
     textAlign: 'center',
     fontWeight: 'bold',
-    color:  '#44576D',
+    color:  'white',
   },
   input: {
     width: 300,
@@ -136,6 +139,7 @@ const styles = StyleSheet.create({
     borderColor: '#768A96',     
     borderRadius: 8,
     marginBottom: 10,
+    backgroundColor: 'white',
   },
   button: {
     marginTop: 20,
@@ -146,9 +150,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   buttonText: {
-    color: 'white',
     fontWeight: 'bold',
     fontSize: 16,
+    color: '#44576D',
   },
 });
 

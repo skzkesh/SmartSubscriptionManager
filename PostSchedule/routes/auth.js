@@ -1,50 +1,41 @@
-// Handle HTTP request
 const express = require('express');
 const router = express.Router();
 
-// Import model
+// Import MongoDB models
 const User = require('../models/User');
-const Subscriber = require('../models/Subscriber');
 
-// Create a new user upon successful sign up
-router.post('/signup', async (req, res) => {
+// Handle the sign-up route
+router.post('/sign-up', async (req, res) => {
+  const { email, name, password } = req.body;
+
+  if (!email || !name || !password) {
+    return res.status(400).json({ message: 'All fields are required' });
+  }
+
+  const emailProcessed = email.trim().toLowerCase();
+  const existingUser = await User.findOne({ email: emailProcessed });
+
+  if (existingUser) {
+    return res.status(400).json({ message: 'User already exists' });
+  }
+
   try {
-    const { name, email, password } = req.body;
+    // Save user to MongoDB 
+    const user = new User({ name, email: emailProcessed, password });
+    await user.save();
 
-    // Check if all required fields are provided
-    if (!name || !email || !password) {
-      return res.status(400).json({ message: 'All fields are required' });
-    }
-
-    const existingUser = await User.findOne({ email });
-
-    if (existingUser){
-      return res.status(400).json({ message: 'User already exists' });
-    }
-
-    const newUser = new User({ name, email, password });
-    const savedUser = await newUser.save();
-
-    if (savedUser) {
-      const successMessage = {
-        message: 'User created successfully',
-        userId: savedUser._id,
-      };
-      return res.status(201).json(successMessage); // Return success response
-    } else {
-      const errorMessage = { message: 'Failed to create user' };
-      return res.status(500).json(errorMessage); // Return failure response
-    }
-  } catch (err) {
-    console.error('Error during user creation:', err); // Log the full error
-    // Return error response with the error message
-    return res.status(400).json({ message: 'Error creating user', error: err.message });
+    res.status(201).json({ message: "User registered", userId: user._id });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
 
-router.post('/login', async (req, res) => {
+
+// Login to existing account
+router.post('/log-in', async (req, res) => {
   try {
     const { email, password } = req.body;
+
     if (!email || !password) {
       return res.status(400).json({ message: 'All fields are required' });
     }
@@ -54,7 +45,6 @@ router.post('/login', async (req, res) => {
     if (!existingUser) {
       return res.status(404).json({ message: 'User not found' });
     }
-
     
     if (existingUser.password != password) {
       return res.status(401).json({ message: 'Invalid password' });
@@ -66,44 +56,45 @@ router.post('/login', async (req, res) => {
   }
 });
 
-router.post('/subscriber', async (req, res) => {
-  try {
-    const { name, email, userId } = req.body;
+// router.post('/subscriber', async (req, res) => {
+//   try {
+//     const { name, email, userId } = req.body;
 
-    if (!email || !password) {
-      return res.status(400).json({ message: 'All fields are required' });
-    }
+//     if (!email || !password) {
+//       return res.status(400).json({ message: 'All fields are required' });
+//     }
 
-    const existingSubscriber = await Subscriber.findOne({ email, userId });
+//     const existingSubscriber = await Subscriber.findOne({ email, userId });
 
-    if (existingSubscriber){
-      return res.status(400).json({ message: 'Subscriber already in database' });
-    }
+//     if (existingSubscriber){
+//       return res.status(400).json({ message: 'Subscriber already in database' });
+//     }
 
-    const newSubscriber = new Subscriber({ name, email, userId });
-    const savedSubscriber = await newSubscriber.save();
+//     const newSubscriber = new Subscriber({ name, email, userId });
+//     const savedSubscriber = await newSubscriber.save();
 
-    if (savedSubscriber) {
-      const successMessage = {
-        message: 'Subscriber added successfully',
-        subscriber: savedSubscriber,
-      };
-      return res.status(201).json(successMessage); 
-    } else {
-      const errorMessage = { message: 'Failed to add subscriber' };
-      return res.status(500).json(errorMessage); 
-    }
-  }
-  catch (err){
-    return res.status(500).json({ error: err.message });
-  }
-});
+//     if (savedSubscriber) {
+//       const successMessage = {
+//         message: 'Subscriber added successfully',
+//         subscriber: savedSubscriber,
+//       };
+//       return res.status(201).json(successMessage); 
+//     } else {
+//       const errorMessage = { message: 'Failed to add subscriber' };
+//       return res.status(500).json(errorMessage); 
+//     }
+//   }
+//   catch (err){
+//     return res.status(500).json({ error: err.message });
+//   }
+// });
 
-router.post('/getName', async (req, res) => {
+router.post('/get-name', async (req, res) => {
   try {
     const { email } = req.body;
 
     const user = await User.findOne({ email });
+    
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
