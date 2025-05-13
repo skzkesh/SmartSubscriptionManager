@@ -1,19 +1,18 @@
-# Email Campaign Planner
+# Smart Subscription Manager
 ## Overview
-**Email Campaign Planner** is a mobile application developed using **React Native**, **TypeScript**, **JavaScript**, and **Node.js**. This app helps individuals and organizations create, manage, and store email campaigns and subscriber lists, while also streamlining the automation of email sending. Additionally, it provides a dedicated insights page to analyze the performance of email campaigns. The app integrates with the **Mailchimp API** to leverage its features for seamless email sending automation.
+**Smart Subscription Manager** is a mobile application developed using **React Native**, **TypeScript**, **JavaScript**, and **Node.js**. This app helps individuals to store and manage their active subscription. The user will get a reminder before the upcoming subscription through notification. Additionally, it provides a dedicated insights page to display the expense of the user. 
 
 ## Features
 - **User Authentication**: Sign up and log in.
-- **Create Campaigns**: Create, manage, and send email campaigns.
-- **Gather Insights**: Analyze the campaigns performance through analytics.
+- **Mange Subscription**: Create a new subscription information and add it to the list or delete a subscription.
+- **Gather Insights**: Track your monthly and total expenses
 - **Manage Subscriber List**: Add, remove, and manage subscribers.
-- **Mailchimp Integration**: Automatically sync campaigns with Mailchimp's API.
+
 
 ## Installation
 ### Prerequisites
 - Expo CLI
 - MongoDB
-- Mailchimp Account & API key
 - Node.js
 - Expo Go
 - Express
