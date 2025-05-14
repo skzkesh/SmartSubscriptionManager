@@ -23,14 +23,20 @@ const Dashboard = () => {
     router.push('../SubscriptionFormScreen');
   };
 
+  const handleItemPress = async (name: string) => {
+    const currItem = await AsyncStorage.setItem('currItem', name);
+    console.log('currItem from AsyncStorage:', currItem);
+    
+    router.push('../SubscriptionDetailScreen');
+  };
+
   const renderCampaignItem = ({ item }: { item: Subscription }) => (
-    <Pressable style={styles.campaignItem}>
+    <Pressable style={styles.campaignItem} onPress={() => handleItemPress(item.name)}>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
         <View>
           <Text style={styles.campaignTitle}>{item.name}</Text>
           <Text style={styles.campaignType}>{item.category}</Text>
         </View>
-        {/* <Entypo name="dots-three-horizontal" size={20} color="#333" /> */}
       </View>
     </Pressable>
   

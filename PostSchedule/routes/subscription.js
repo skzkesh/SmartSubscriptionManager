@@ -4,6 +4,8 @@ const router = express.Router();
 
 // Import model
 const Subscription = require('../models/Subscription');
+const { getTotalEachSubscription } = require('../util/date'); // Adjust path if needed
+
 
 // Create and save new campaign to database
 router.post('/add-subscription', async (req, res) => {
@@ -24,6 +26,9 @@ router.post('/add-subscription', async (req, res) => {
         return res.status(400).json({ message: 'All fields are required' });
       }
   
+      const today = new Date().toISOString().split('T')[0];
+      const totalSpend = getTotalEachSubscription(normalizedAmount, normalizedBillingCycle, startDate, today);
+
       const newSubscription = new Subscription({ 
         userId, 
         name, 
@@ -32,7 +37,8 @@ router.post('/add-subscription', async (req, res) => {
         startDate: new Date(startDate), 
         nextBillingDate: new Date(nextBillingDate), 
         category, 
-        notes 
+        notes,
+        totalSpend,
       });
 
       const success = await newSubscription.save();
@@ -63,6 +69,66 @@ router.post('/get-subscription-all', async (req, res) => {
     const subscriptions = await Subscription.find({ userId });
 
     return res.status(200).json({ subscriptions });
+  } catch (err) {
+    console.error('Error fetching subscriptions:', err);
+    return res.status(500).json({ message: 'Server error', error: err.message });
+  }
+});
+
+router.post('/get-subscription-all-spend', async (req, res) => {
+  try {
+    const { userId } = req.body;
+
+    if (!userId) {
+      return res.status(400).json({ message: 'User ID is required' });
+    }
+
+    const subscriptions = await Subscription.find({ userId });
+
+    const today = new Date().toISOString().split('T')[0]; // Format as YYYY-MM-DD
+
+    const subscriptionsWithTotal = subscriptions.map(sub => {
+      const totalExpense = getTotalEachSubscription(
+        sub.amount,
+        sub.billingCycle,
+        sub.startDate,
+        today
+      );
+
+      return {
+        ...sub.toObject(),
+        totalExpense,
+      };
+    });
+
+    return res.status(200).json({ subscriptions: subscriptionsWithTotal });
+  } catch (err) {
+    console.error('Error fetching subscriptions:', err);
+    return res.status(500).json({ message: 'Server error', error: err.message });
+  }
+});
+
+//Get information from a subscription
+router.post('/get-subscription-information', async (req, res) => {
+  try {
+    const { userId, name } = req.body;
+
+    if (!name) {
+      return res.status(400).json({ message: 'Item name is required' });
+    }
+
+    // Debugging log to check what's received by the server
+    console.log('Received userId:', userId);
+    console.log('Received name:', name);
+
+    // Find the subscription for the given userId and name
+    const subscription = await Subscription.findOne({ userId, name });
+
+    if (!subscription) {
+      return res.status(404).json({ message: `No subscription found for userId: ${userId} and name: ${name}` });
+    }
+    
+    return res.status(200).json({ subscription });
   } catch (err) {
     console.error('Error fetching subscriptions:', err);
     return res.status(500).json({ message: 'Server error', error: err.message });

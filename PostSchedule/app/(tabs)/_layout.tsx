@@ -36,6 +36,14 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
+        name="record"
+        options={{
+          title: 'Record',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="moonphase.first.quarter" color={color} />,
+        }}
+      />
+
+      <Tabs.Screen
         name="settings"
         options={{
           title: 'Settings',

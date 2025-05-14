@@ -1,11 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import { StyleSheet, Text, View, Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
 
-type User = {
-  email: string;
-};
 
 const SettingsScreen = () => {
   const router = useRouter();
