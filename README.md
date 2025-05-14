@@ -1,7 +1,7 @@
 # Smart Subscription Manager
 **Project Demo Link**: [Current Project Demo](https://drive.google.com/file/d/1s0IO-DWOHprpDHoC4wyBtl-VLDCIBK1x/view?usp=sharing)
 ## Overview
-**Smart Subscription Manager** is a mobile application developed using **React Native**, **TypeScript**, **JavaScript**, and **Node.js**. This app helps individuals to store and manage their active subscription. The user will get a reminder before the upcoming subscription through notification. Additionally, it provides a dedicated insights page to display the expense of the user. 
+**Smart Subscription Manager** is a mobile application developed using **React Native**, **TypeScript**, **JavaScript**, and **Node.js**. This app helps individuals to store and manage their active subscription. User can get information of their total spending and modify current subscription information.
 
 ## Features
 - **User Authentication**: Sign up and log in.
