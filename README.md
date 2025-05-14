@@ -40,7 +40,7 @@ cd your-repo-name
 1. Navigate to the this directory:
 
 ```bash
-cd postSchedule
+cd PostSchedule
 ```
 
 2. Install dependencies:
@@ -60,7 +60,7 @@ yarn start
 ```
 
 ## 🔧 Backend Setup (Node.js + Express + MongoDB)
-Open to a new terminal and navigate to postSchedule again
+Open to a new terminal and navigate to PostSchedule again
 
 1. Install dependencies:
 
