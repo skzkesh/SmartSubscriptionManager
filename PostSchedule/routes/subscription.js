@@ -3,7 +3,6 @@ const express = require('express');
 const router = express.Router();
 
 // Import model
-const User = require('../models/User');
 const Subscription = require('../models/Subscription');
 
 // Create and save new campaign to database
@@ -52,19 +51,16 @@ router.post('/add-subscription', async (req, res) => {
     }
 });
 
-
-
 // Get all subscriptions by the user
-// routes/subscription.js
 router.post('/get-subscription-all', async (req, res) => {
   try {
-    const { email } = req.body;
+    const { userId } = req.body;
 
-    if (!email) {
+    if (!userId) {
       return res.status(400).json({ message: 'Email is required' });
     }
 
-    const subscriptions = await Subscription.find({ email });
+    const subscriptions = await Subscription.find({ userId });
 
     return res.status(200).json({ subscriptions });
   } catch (err) {
@@ -73,5 +69,20 @@ router.post('/get-subscription-all', async (req, res) => {
   }
 });
 
+router.post('/delete-subscription', async (req, res) => {
+  try {
+    const { email, name } = req.body;
+
+    const success = await Subscription.deleteOne({ email, name });
+
+    if (!success) {
+      return res.status(404).json({ message: 'Subscription not found' });
+    }
+    res.status(200).json({ message: 'Subscription deleted successfully' });
+  }
+  catch (err) {
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+})
 
 module.exports = router;
