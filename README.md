@@ -4,9 +4,9 @@
 
 ## Features
 - **User Authentication**: Sign up and log in.
-- **Mange Subscription**: Create a new subscription information and add it to the list or delete a subscription.
-- **Gather Insights**: Track your monthly and total expenses
-- **Manage Subscriber List**: Add, remove, and manage subscribers.
+- **Mange Subscription**: Create a new subscription information and add it to the list.
+- **Gather Insights**: Track total expenses
+- **Manage Subscriber List**: Add and remove subscription.
 
 
 ## Installation
@@ -16,6 +16,7 @@
 - Node.js
 - Expo Go
 - Express
+-- 
 The project also uses the following libraries:
 - `axios` - for making HTTP requests
 - `@react-native-async-storage/async-storage` - for local data storage
