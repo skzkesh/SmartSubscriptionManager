@@ -39,7 +39,7 @@ const SubscriptionFormScreen = () =>
 
         if (success){
           Alert.alert('Success', 'Your subscription is added');
-          router.push('/(tabs)/DashboardScreen');
+          router.push('/(tabs)');
         }
       }
     };
