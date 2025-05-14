@@ -60,66 +60,46 @@ yarn start
 ```
 
 ## 🔧 Backend Setup (Node.js + Express + MongoDB)
-Navigate to the backend directory:
+Open to a new terminal and navigate to postSchedule again
 
-bash
-Copy
-Edit
-cd ../backend
-Install dependencies:
+1. Install dependencies:
 
-bash
-Copy
-Edit
+```bash
 npm install
-Create a .env file and add your environment variables:
+```
 
-bash
-Copy
-Edit
+2. Create a .env file and add your environment variables:
+
+```bash
 touch .env
-Add the following:
+```
 
-ini
-Copy
-Edit
+3. Add the following:
+
+```bash
 MONGO_URI=your-mongodb-connection-string
 PORT=5000
-Start the backend server:
+```
 
-bash
-Copy
-Edit
-npm run dev
-🔗 Connect Frontend to Backend
-Update the API base URL:
+4. Start the backend server:
 
-Open frontend/config.js
+```bash
+node server.js
+```
 
-Replace with your local IP or deployed backend URL:
+## 🔗 Connect Frontend to Backend
+1. Update the API base URL:
 
-js
-Copy
-Edit
+Create a config.js file in the current directory and add your local IP.
+
+```bash
 const BASE_URL = 'http://YOUR_LOCAL_IP:5000'; // e.g., http://192.168.0.10:5000
 export default BASE_URL;
-🧪 Test the App
-Open the Expo app on a physical device or emulator
+```
 
-Ensure both devices are on the same Wi-Fi
+## 🧪 Test the App
+Open the Expo app on a physical device or emulator and ensure both devices are on the same Wi-Fi
 
-Verify functions: add subscription, view details, delete, etc.
-
-🛠️ Troubleshooting
-AsyncStorage not working: Try clearing Expo cache
-
-bash
-Copy
-Edit
-npx expo start -c
-Backend not connecting: Ensure MongoDB is running and BASE_URL is correct
-
-404 or 500 errors: Check API logs and backend routes
 
 
 
