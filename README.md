@@ -1,13 +1,13 @@
 # Smart Subscription Manager
-**Project Demo Link**: [Current Project Demo](https://drive.google.com/file/d/1s0IO-DWOHprpDHoC4wyBtl-VLDCIBK1x/view?usp=sharing)
+**Project Demo Link**: [Current Project Demo](https://drive.google.com/file/d/14Cqgil6d4XEYbvYPDv_D8aG7l4WuqX10/view?usp=sharing)
 ## Overview
 **Smart Subscription Manager** is a mobile application developed using **React Native**, **TypeScript**, **JavaScript**, and **Node.js**. This app helps individuals to store and manage their active subscription. The app leverages **MongoDB** to store and retrieve user and subscription data. Its core purpose is to provide a centralized platform for users to keep track of all their subscriptions. Additional features are currently under development to further enhance the app’s functionality and user experience.
 
 ## Features
 - **User Authentication**: Sign up and log in.
-- **Mange Subscription**: Create a new subscription information and add it to the list.
+- **Manage Subscription**: Create a new subscription information and add it to the list.
 - **Gather Insights**: Track total expenses
-- **Manaage Subscriber List**: Add and remove subscription.
+- **Manaage Subscriber List**: Modify the status of current subscription (Active, Cancelled).
 
 ## Project Plan
 ### Current features in development
