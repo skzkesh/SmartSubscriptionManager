@@ -22,7 +22,9 @@ const Dashboard = () => {
   };
 
   const handleItemPress = async (name: string) => {
-    const currItem = await AsyncStorage.setItem('currItem', name);
+    await AsyncStorage.setItem('currItem', name);
+
+    const currItem = await AsyncStorage.getItem('currItem');
     console.log('currItem from AsyncStorage:', currItem);
     
     router.push('../SubscriptionDetailScreen');
@@ -77,6 +79,9 @@ const Dashboard = () => {
           <Text style={styles.buttonText}>Add New Subscription</Text>
         </Pressable>
       </View>
+      <View style={styles.notificationContainer}>
+        <Text>Next renewal: </Text>
+      </View>
       <View style={styles.savedCampaignContainer}>
         <Text style={styles.savedCampaign}>
             My Subscriptions
@@ -120,7 +125,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 8,
     marginVertical: 20,
-    marginBottom: 30,
+    marginBottom: 20,
     alignItems: 'center',
     justifyContent: 'center'
   },
@@ -128,6 +133,10 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
     fontSize: 16,
+  },
+  notificationContainer: {
+    width: '95%',  
+    paddingHorizontal: 16,
   },
   savedCampaignContainer: {
     width: '95%',
