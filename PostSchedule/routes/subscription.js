@@ -4,7 +4,7 @@ const router = express.Router();
 
 // Import model
 const Subscription = require('../models/Subscription');
-const { getTotalEachSubscription } = require('../util/date'); // Adjust path if needed
+const { getTotalEachSubscription,  getNextBillingDate } = require('../util/date'); 
 
 
 // Create and save new campaign to database
@@ -17,28 +17,37 @@ router.post('/add-subscription', async (req, res) => {
         normalizedAmount,
         normalizedBillingCycle,
         startDate,
-        nextBillingDate,
         notes,  
       } = req.body;
   
       // Check if all required fields are provided
-      if (!name || !category || !normalizedAmount || !normalizedBillingCycle || !startDate) {
-        return res.status(400).json({ message: 'All fields are required' });
+      if (
+        typeof normalizedAmount !== 'number' || 
+        !['weekly', 'monthly', 'yearly'].includes(normalizedBillingCycle) || 
+        !name || !category || !startDate
+      ) {
+        return res.status(400).json({ message: 'Invalid input' });
       }
-  
+      
+      
       const today = new Date().toISOString().split('T')[0];
+      //const nextBillingDate = date.getNextBillingDate(normalizedBillingCycle, startDate, today);
       const totalSpend = getTotalEachSubscription(normalizedAmount, normalizedBillingCycle, startDate, today);
+
+      console.log("Date today: " + today);
+      console.log("Total spend: " + totalSpend);
 
       const newSubscription = new Subscription({ 
         userId, 
         name, 
         amount: normalizedAmount, 
         billingCycle: normalizedBillingCycle, 
-        startDate: new Date(startDate), 
-        nextBillingDate: new Date(nextBillingDate), 
+        startDate: new Date(startDate),
+        endDate: null,
         category, 
         notes,
-        totalSpend,
+        totalExpense: totalSpend,
+        status: "Active",
       });
 
       const success = await newSubscription.save();
@@ -48,11 +57,15 @@ router.post('/add-subscription', async (req, res) => {
           message: 'Subscription created successfully',
         };
         return res.status(201).json(successMessage); 
-      } else {
+
+      } 
+      else {
         const errorMessage = { message: 'Failed to create sub' };
         return res.status(500).json(errorMessage);
       }
+
     } catch (err) {
+      console.error("Error details:", err);
       return res.status(400).json({ message: 'Error creating sub', error: err.message });
     }
 });
@@ -129,26 +142,33 @@ router.post('/get-subscription-information', async (req, res) => {
     }
     
     return res.status(200).json({ subscription });
+
   } catch (err) {
     console.error('Error fetching subscriptions:', err);
     return res.status(500).json({ message: 'Server error', error: err.message });
   }
 });
 
-router.post('/delete-subscription', async (req, res) => {
+// Change the current subscription status from 'active' to 'cancelled'
+router.post('/cancel-subscription', async (req, res) => {
   try {
     const { email, name } = req.body;
 
-    const success = await Subscription.deleteOne({ email, name });
+    const subscription = await Subscription.findOne({ email, name });
 
-    if (!success) {
+    if (!subscription) {
       return res.status(404).json({ message: 'Subscription not found' });
     }
-    res.status(200).json({ message: 'Subscription deleted successfully' });
+
+    subscription.status = 'Cancelled';
+    subscription.save();
+
+    res.status(200).json({ message: 'Subscription cancelled successfully' });
+
   }
   catch (err) {
     res.status(500).json({ message: 'Server error', error: err.message });
   }
-})
+});
 
 module.exports = router;

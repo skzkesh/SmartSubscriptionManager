@@ -34,6 +34,7 @@ const RecordScreen = () => {
               }, 0);
 
             setTotalSpend(total);
+            
         } catch (error) {
           console.error("Error fetching subscriptions:", error);
         }

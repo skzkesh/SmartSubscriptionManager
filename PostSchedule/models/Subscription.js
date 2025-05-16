@@ -22,7 +22,7 @@ const subscriptionSchema = new mongoose.Schema ({
         type: Date,
         default: Date.now,
     },
-    nextBillingDate: {
+    endDate: {
         type: Date,
     },
     category: {
@@ -34,7 +34,11 @@ const subscriptionSchema = new mongoose.Schema ({
     totalExpense: {
         type: Number,
         default: 0,
-    }
+    },
+    status: {
+        type: String,
+        enum: ['Active', 'Cancelled']
+    },
 });
 
 module.exports = mongoose.model('Subscription', subscriptionSchema);

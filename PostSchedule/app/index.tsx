@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -13,17 +13,19 @@ import BASE_URL from '../config';
 // Handle sign up logic
 const SignUpScreen = () =>  {
     const router = useRouter();
-    const [name, setUsername] = React.useState("");
-    const [email, setEmail] = React.useState("");
-    const [password, setPassword] = React.useState("");
+    const [name, setUsername] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
 
     const handleSignUpButon = async () => {
         if (!name || !email || !password){
           Alert.alert('Empty Field', 'All field must be filled');
         }
+
         else if (!validation.validateEmail(email)){
           Alert.alert('Invalid Email', 'Email format is invalid');
         }
+
         else {
           const success = await saveCredential();
           console.log(success);
@@ -32,6 +34,7 @@ const SignUpScreen = () =>  {
             setUsername("")
             setEmail("");
             setPassword("");
+            
             Alert.alert('Success', 'User successfully signed up');
             router.replace('/(tabs)');
           }

@@ -56,7 +56,6 @@ const SubscriptionFormScreen = () =>
 
         const normalizedAmount = parseInt(amount);
 
-        const nextBillingDate = date.getNextBillingDate(billingCycle, startDate);
         const response = await axios.post(`${BASE_URL}/api/subscription/add-subscription`, {
           userId,
           name, 
@@ -64,7 +63,6 @@ const SubscriptionFormScreen = () =>
           normalizedAmount,
           normalizedBillingCycle,
           startDate,
-          nextBillingDate,
           notes,
         });
 

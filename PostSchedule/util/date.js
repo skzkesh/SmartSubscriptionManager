@@ -1,41 +1,38 @@
-// Calculates the next billing date based on cycle and start date
-const getNextBillingDate = (billingCycle, startDate) => {
-    const year = parseInt(startDate.slice(0, 4));
-    const month = parseInt(startDate.slice(5, 7));
-    const day = parseInt(startDate.slice(8, 10));
+const getNextBillingDate = (billingCycle, startDate, today) => {
+    const normalizeDate = (dateStr) => new Date(dateStr + 'T00:00:00');
 
-    const normalizedBillingCycle = billingCycle.trim().toLowerCase();
+    let currentDate = normalizeDate(startDate);
+    const todayDate = normalizeDate(today);
 
-    let newYear = year;
-    let newMonth = month;
-    let newDay = day;
+    while (currentDate < todayDate) {
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth(); // 0-indexed
+        const day = currentDate.getDate();
 
-    if (normalizedBillingCycle === "yearly") {
-        newYear += 1;
-    } else if (normalizedBillingCycle === "monthly") {
-        newMonth += 1;
-        if (newMonth > 12) {
-            newMonth = 1;
-            newYear += 1;
+        if (billingCycle === "yearly") {
+            currentDate = new Date(year + 1, month, day);
+        } else if (billingCycle === "monthly") {
+            currentDate = new Date(year, month + 1, day);
+        } else if (billingCycle === "weekly") {
+            currentDate.setDate(currentDate.getDate() + 7);
+        } else {
+            break;
         }
-    } else if (normalizedBillingCycle === "weekly") {
-        const date = new Date(year, month - 1, day);
-        date.setDate(date.getDate() + 7);
-        newYear = date.getFullYear();
-        newMonth = date.getMonth() + 1;
-        newDay = date.getDate();
     }
 
-    const formattedMonth = String(newMonth).padStart(2, '0');
-    const formattedDay = String(newDay).padStart(2, '0');
+    const yyyy = currentDate.getFullYear();
+    const mm = String(currentDate.getMonth() + 1).padStart(2, '0'); // getMonth is 0-indexed
+    const dd = String(currentDate.getDate()).padStart(2, '0');
 
-    return `${newYear}-${formattedMonth}-${formattedDay}`;
+    return `${yyyy}-${mm}-${dd}`;
 };
 
+
 // Calculates total spend per subscription up to 'today'
-const getTotalEachSubscription = (amount, billingCycle, startDate, today) => {
+const getTotalEachSubscription = (amount, billingCycle, startDateStr, todayStr) => {
     let total = 0;
-    let currentDate = startDate;
+    let currentDate = new Date(startDateStr);
+    const today = new Date(todayStr);
 
     while (currentDate <= today) {
         total += amount;

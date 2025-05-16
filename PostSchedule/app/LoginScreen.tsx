@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -19,9 +19,11 @@ const LoginScreen = () =>  {
         if (!email || !password){
           Alert.alert('Empty Field', 'All field must be filled');
         }
+
         else if (!validation.validateEmail(email)){
           Alert.alert('Invalid Email', 'Email format is invalid');
         }
+
         else {
           setEmail("");
           setPassword("");
@@ -43,12 +45,16 @@ const LoginScreen = () =>  {
           password,
         });
 
-        console.log('Status:', response.status); 
         if (response.status == 200) {
           await AsyncStorage.setItem('userId', response.data.userId); 
           await AsyncStorage.setItem('email', email);
+
+          console.log("UserID of current user " + response.data.userId);
+          console.log("Email of current user: " + email);
+
           return true;
         }
+        
         else {
           return false;
         }

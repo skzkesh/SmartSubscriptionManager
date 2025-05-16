@@ -1,8 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Entypo from 'react-native-vector-icons/Entypo';
-
 
 import { StyleSheet, Text, View, Pressable, FlatList } from 'react-native';
 import { useRouter } from 'expo-router';
@@ -12,7 +10,7 @@ import BASE_URL from '../../config'
 
 type Subscription = {
     name: string,
-    category: string,
+    status: string,
 };
 
 const Dashboard = () => {
@@ -35,7 +33,7 @@ const Dashboard = () => {
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
         <View>
           <Text style={styles.campaignTitle}>{item.name}</Text>
-          <Text style={styles.campaignType}>{item.category}</Text>
+          <Text style={styles.campaignType}>{item.status}</Text>
         </View>
       </View>
     </Pressable>
@@ -45,7 +43,7 @@ const Dashboard = () => {
     useEffect(() => {
       const fetchSubscriptions = async () => {
         try {
-          const userId = await AsyncStorage.getItem('userId'); // or however you're storing it
+          const userId = await AsyncStorage.getItem('userId'); 
           console.log(userId);
           const response = await axios.post(`${BASE_URL}/api/subscription/get-subscription-all`, {
             userId,
