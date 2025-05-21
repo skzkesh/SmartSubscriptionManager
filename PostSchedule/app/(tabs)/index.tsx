@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { StyleSheet, Text, View, Pressable, FlatList } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, Pressable, FlatList } from 'react-native';
 import { useRouter } from 'expo-router';
 
 import BASE_URL from '../../config'
@@ -61,7 +61,7 @@ const Dashboard = () => {
     }, []);
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text style={styles.title}>
         Smart Subscription Manager
       </Text>
@@ -79,9 +79,9 @@ const Dashboard = () => {
           <Text style={styles.buttonText}>Add New Subscription</Text>
         </Pressable>
       </View>
-      <View style={styles.notificationContainer}>
+      {/* <View style={styles.notificationContainer}>
         <Text>Next renewal: </Text>
-      </View>
+      </View> */}
       <View style={styles.savedCampaignContainer}>
         <Text style={styles.savedCampaign}>
             My Subscriptions
@@ -94,7 +94,7 @@ const Dashboard = () => {
             />
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
     fontSize: 30,
     margin: 20,
     textAlign: 'center',
-    marginTop: 100,
+    marginTop: 30,
     fontWeight: 'bold',
     color: '#29353C',
   },
