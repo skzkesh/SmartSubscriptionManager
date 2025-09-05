@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { StyleSheet, Text, View, Pressable, TextInput, Alert } from 'react-native';
+import { StyleSheet, Text, View, Pressable, TextInput, Alert} from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native';
 
@@ -18,27 +18,41 @@ const SignUpScreen = () =>  {
     const [password, setPassword] = useState("");
 
     const handleSignUpButon = async () => {
-        if (!name || !email || !password){
-          Alert.alert('Empty Field', 'All field must be filled');
-        }
+      if (!areFieldsFilled()) return;
+      if (!isEmailValid()) return;
 
-        else if (!validation.validateEmail(email)){
-          Alert.alert('Invalid Email', 'Email format is invalid');
-        }
 
-        else {
-          const success = await saveCredential();
-          console.log(success);
+      const success = await saveCredential();
+      console.log(`Signed up: ${success}`);
+  
+      if (success) {
+        setUsername("")
+        setEmail("");
+        setPassword("");
+        
+        Alert.alert('Success', 'User successfully signed up');
+        router.replace('/(tabs)');
+      }
+      else {
+        Alert.alert('Error', 'Failed to sign up. Please try again.');
+      }
 
-          if (success) {
-            setUsername("")
-            setEmail("");
-            setPassword("");
-            
-            Alert.alert('Success', 'User successfully signed up');
-            router.replace('/(tabs)');
-          }
+    };
+
+    const areFieldsFilled = (): boolean => {
+      if (name && email && password){
+          return true;
+      }
+      Alert.alert('Empty Field', 'All field must be filled');
+      return false;
+    };
+
+    const isEmailValid = (): boolean => {
+        if (validation.validateEmail(email)){
+          return true;
         }
+        Alert.alert('Invalid Email', 'Email format is invalid');
+        return false;
     };
 
     const saveCredential = async () => {
@@ -58,15 +72,13 @@ const SignUpScreen = () =>  {
           await AsyncStorage.setItem('email', email);
           return true;
         }
-        else {
-          return false;
-        }
+        return false;
       }
       catch (error) {
         console.error(error);
         Alert.alert('Failed', 'Fail to save credential');
       }
-    }
+    };
 
   return (
     <SafeAreaView style={styles.container}>

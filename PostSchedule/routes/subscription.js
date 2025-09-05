@@ -174,7 +174,6 @@ router.post('/cancel-subscription', async (req, res) => {
 // Find a list of subscription based on keyword
 router.post('/find-subscription-keyword', async (req, res) => {
   try {
-    console.log('in');
     const { userId, keyword } = req.body;
 
     const subscription = await Subscription.find({ userId, name: { $regex: keyword, $options: 'i' }  });
@@ -189,6 +188,18 @@ router.post('/find-subscription-keyword', async (req, res) => {
   catch (err) {
     console.error('Error fetching subscriptions:', err);
     return res.status(500).json({ message: 'Server error', error: err.message });
+  }
+});
+
+router.post('find-subscription-filter', async (req, res) => {
+  try {
+    const { userId, price, category, status } = req.body;
+
+    
+
+  }
+  catch (err) {
+
   }
 });
 

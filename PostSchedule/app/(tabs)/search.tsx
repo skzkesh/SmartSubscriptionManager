@@ -38,6 +38,10 @@ const SearchScreen = () => {
     router.push('../SubscriptionDetailScreen');
   };
 
+  const handleFilterPress = async () => {
+    router.replace('../FilterScreen');
+  };
+ 
   const handleSearchPress = () => {
     console.log('button clicked');
     fetchSubscriptions();
@@ -77,6 +81,15 @@ const SearchScreen = () => {
           ]}
         >
           <Text style={{ color: '#44576D', fontWeight: 'bold' }}>Find</Text>
+        </Pressable>
+        <Pressable
+          onPress={handleFilterPress}
+          style={( ) => [
+            styles.filterButton,
+            { backgroundColor: 'white' },
+          ]}
+        >
+          <Text style={{ color: '#44576D', fontWeight: 'bold' }}>Filter</Text>
         </Pressable>
       </View>
       <View style={styles.subscriptionsContainer}>
@@ -122,7 +135,7 @@ const styles = StyleSheet.create({
   },
   keyword: {
     flex: 1,
-    width: 220,
+    width: 180,
     height: 45,
     padding: '3%',
     marginTop: 10,
@@ -135,7 +148,17 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   searchButton: {
-    marginHorizontal: 10,
+    marginLeft: 5,
+    marginTop: 10,
+    height: 45,
+    width: 40,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  filterButton: {
+    marginLeft: 5,
+    marginRight: 10,
     marginTop: 10,
     height: 45,
     width: 40,
