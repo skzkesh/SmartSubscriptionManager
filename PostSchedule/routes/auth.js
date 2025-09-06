@@ -1,6 +1,7 @@
 // Handle HTTP request
 const express = require('express');
 const router = express.Router();
+const users = [];
 
 // Import MongoDB models
 const User = require('../models/User');
@@ -31,6 +32,26 @@ router.post('/sign-up', async (req, res) => {
   }
 });
 
+// New sign up
+router.post('/register', async (req, res) => {
+  const { email, name, password } = req.body;
+
+  // Check if user already exists
+  if (!email || !name || !password) {
+    return res.status(400).json({ message: 'All fields are required' });
+  }
+
+  const emailProcessed = email.trim().toLowerCase();
+  const existingUser = await User.findOne({ email: emailProcessed });
+
+  if (existingUser) {
+    return res.status(400).json({ message: 'User already exists' });
+  }
+
+  // Store user
+  users.push({ username, email, password });
+  res.status(201).send('User created');
+});
 
 // Login to existing account
 router.post('/log-in', async (req, res) => {
