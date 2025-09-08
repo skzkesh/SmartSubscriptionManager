@@ -1,15 +1,37 @@
+require('dotenv').config();
 // Handle HTTP request
 const express = require('express');
 const router = express.Router();
-const users = [];
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 
 // Import MongoDB models
 const User = require('../models/User');
 
-// Handle the sign-up route
-router.post('/sign-up', async (req, res) => {
+// Secret key
+const secretKey = process.env.JWT_SECRET;
+
+// Middleware to authenticate the JWT
+const authenticateToken = (req, res, next) => {
+  const token = req.headers['authorization'].split(' '[1]);
+  
+  if (!token){
+    return res.status(401).json({ message: 'Access denied: No token provided' });
+  }
+
+  jwt.verify(token, secretKey, (err, user) => {
+    if (err) {
+      return res.status(403).json({ message: 'Invalid token' });
+    }
+    req.user = user; // Attach user info to request
+    next();
+  })
+}
+// New sign up
+router.post('/register', async (req, res) => {
   const { email, name, password } = req.body;
 
+  // Check if user already exists
   if (!email || !name || !password) {
     return res.status(400).json({ message: 'All fields are required' });
   }
@@ -27,30 +49,10 @@ router.post('/sign-up', async (req, res) => {
     await user.save();
 
     res.status(201).json({ message: "User registered", userId: user._id });
-  } catch (error) {
+  }
+  catch (error) {
     res.status(500).json({ error: error.message });
   }
-});
-
-// New sign up
-router.post('/register', async (req, res) => {
-  const { email, name, password } = req.body;
-
-  // Check if user already exists
-  if (!email || !name || !password) {
-    return res.status(400).json({ message: 'All fields are required' });
-  }
-
-  const emailProcessed = email.trim().toLowerCase();
-  const existingUser = await User.findOne({ email: emailProcessed });
-
-  if (existingUser) {
-    return res.status(400).json({ message: 'User already exists' });
-  }
-
-  // Store user
-  users.push({ username, email, password });
-  res.status(201).send('User created');
 });
 
 // Login to existing account
@@ -71,10 +73,26 @@ router.post('/log-in', async (req, res) => {
     if (existingUser.password != password) {
       return res.status(401).json({ message: 'Invalid password' });
     }
+    
+    // Generate JWT token
+    const token = jwt.sign({ userId: existingUser._id }, secretKey, { expiresIn: '1h' });
+    return res.status(200).json({ message: 'Login successful', userId: existingUser._id, token});
 
-    return res.status(200).json({ message: 'Login successful', userId: existingUser._id });
   } catch (err) {
     return res.status(500).json({ message: 'Server error', error: err.message });
+  }
+});
+
+router.get('/me', authenticateToken, async(req, res) => {
+  try {
+    const user = await User.findById(req.user.userId).select('-password');
+    if (!user){
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.status(200).json(user);
+  }
+  catch (err) {
+    res.status(500).json({ message: error.message });
   }
 });
 
